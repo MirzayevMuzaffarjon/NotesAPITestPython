@@ -1,4 +1,5 @@
 import pytest_check as check
+from api_test.schemas.health_check import health_check_schemas
 
 
 def test_health_check_returns_200(client, config, assertions):
@@ -7,6 +8,8 @@ def test_health_check_returns_200(client, config, assertions):
 
     response = client.send_request(method=method, url=url)
     assertions.validate_status_code(response=response, expected_status_code=200)
+    assertions.validate_json_schema_pydantic(json=response.json(), model=health_check_schemas.SchemaHealthCheck)
+
 
 
 def test_health_check_response_body(client, config, assertions):
