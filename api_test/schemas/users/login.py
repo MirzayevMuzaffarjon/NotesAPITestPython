@@ -1,11 +1,11 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr, Field
 from typing import Optional, Union
 
 class Data(BaseModel):
     id: str
     name: str
-    email: str
-    token: str
+    email: EmailStr
+    token: str = Field(min_length=20, max_length=500)
 
 class SchemaLoginSuccess(BaseModel):
     success: bool
