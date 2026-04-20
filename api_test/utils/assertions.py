@@ -42,3 +42,8 @@ class Assertions:
                 f"Error: {e}\n"
                 f"Got data: {json}"
             )
+
+    @staticmethod
+    def validate_to_equality(a, b):
+        logging.info(f"!!! Validating equality {a} to {b}")
+        check.equal(a=a, b=b, msg=f"Fail validate_to_equality: {a} != {b}")

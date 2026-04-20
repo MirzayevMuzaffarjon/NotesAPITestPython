@@ -1,5 +1,6 @@
 import pytest_check as check
 
+
 def test_health_check_returns_200(client, config, assertions):
     method = "GET"
     url = f"{config.base_url}/health-check"
