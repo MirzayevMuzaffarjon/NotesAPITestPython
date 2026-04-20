@@ -12,3 +12,9 @@ class SchemaLoginSuccess(BaseModel):
     status: int
     message: str
     data: Data
+
+
+class SchemaLoginErrorCase(BaseModel):
+    success: bool
+    status: int
+    message: str = Field(min_length=20, max_length=500)
