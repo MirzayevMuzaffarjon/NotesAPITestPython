@@ -8,7 +8,10 @@ def test_health_check_returns_200(client, config, assertions):
 
     response = client.send_request(method=method, url=url)
     assertions.validate_status_code(response=response, expected_status_code=200)
-    assertions.validate_json_schema_pydantic(json=response.json(), model=health_check_schemas.SchemaHealthCheck)
+    assertions.validate_json_schema_pydantic(
+        json_data=response.json(), 
+        model=health_check_schemas.SchemaHealthCheck
+    )
 
 
 
