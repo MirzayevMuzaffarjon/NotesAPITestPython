@@ -99,7 +99,7 @@ def test_login_with_sql_injection_in_email(client, assertions, config, users_dat
 
     response = client.send_request(method=method, url=url, json=json)
 
-    assertions.validate_status_code(response=response, expected_status_code=401)
+    assertions.validate_status_code(response=response, expected_status_code=400)
     assertions.validate_json_schema_pydantic(json=response.json(), model=login.SchemaLoginErrorCase)
 
 
@@ -201,5 +201,5 @@ def test_login_with_special_characters_in_password(client, assertions, config, u
 
     response = client.send_request(method=method, url=url, json=json)
 
-    assertions.validate_status_code(response=response, expected_status_code=401)
+    assertions.validate_status_code(response=response, expected_status_code=400)
     assertions.validate_json_schema_pydantic(json=response.json(), model=login.SchemaLoginErrorCase)
