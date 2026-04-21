@@ -9,17 +9,14 @@ from api_test.clients.base_client import BaseClient
 class UsersClient(BaseClient):
     """Client for Users API endpoints."""
     
-    def __init__(self, session: Optional[Session] = None, base_url: Optional[str] = None):
+    def __init__(self, base_url: str, session: Optional[Session] = None):
         """Initialize the users client.
         
         Args:
-            session: Optional requests Session object.
             base_url: Base URL for the API.
+            session: Optional requests Session object.
         """
-        super().__init__(session=session)
-        if not base_url:
-            raise ValueError("base_url is required")
-        self.base_url = base_url.rstrip('/')
+        super().__init__(base_url=base_url, session=session)
     
     def register(self, name: str, email: str, password: str) -> Response:
         """Register a new user.
@@ -32,9 +29,8 @@ class UsersClient(BaseClient):
         Returns:
             Response object from the API.
         """
-        url = f"{self.base_url}/users/register"
         data = {"name": name, "email": email, "password": password}
-        return self.send_request(method="POST", url=url, data=data)
+        return self.send_request(method="POST", endpoint="/users/register", data=data)
     
     def login(self, email: str, password: str) -> Response:
         """Login with existing user credentials.
@@ -46,9 +42,8 @@ class UsersClient(BaseClient):
         Returns:
             Response object from the API.
         """
-        url = f"{self.base_url}/users/login"
         data = {"email": email, "password": password}
-        return self.send_request(method="POST", url=url, data=data)
+        return self.send_request(method="POST", endpoint="/users/login", data=data)
     
     def delete_account(self, token: str) -> Response:
         """Delete the authenticated user account.
@@ -59,6 +54,5 @@ class UsersClient(BaseClient):
         Returns:
             Response object from the API.
         """
-        url = f"{self.base_url}/users/delete-account"
         headers = {"x-auth-token": token}
-        return self.send_request(method="DELETE", url=url, headers=headers)
+        return self.send_request(method="DELETE", endpoint="/users/delete-account", headers=headers)
