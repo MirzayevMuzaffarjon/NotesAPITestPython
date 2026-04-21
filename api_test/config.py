@@ -18,7 +18,7 @@ class Config:
         """Get the base API URL."""
         if not self._base_url:
             raise ValueError("BASE_URL environment variable is not set")
-        return self._base_url
+        return self._base_url.rstrip('/')
     
     @property
     def logged_in_email(self) -> str:
@@ -43,3 +43,13 @@ class Config:
     def default_password(self) -> str:
         """Get the default test password."""
         return "TestPassword123!"
+
+
+# API Endpoints constants
+class APIEndpoints:
+    """API endpoint paths."""
+    HEALTH_CHECK = "/health-check"
+    USERS_REGISTER = "/users/register"
+    USERS_LOGIN = "/users/login"
+    USERS_DELETE_ACCOUNT = "/users/delete-account"
+    NOTES = "/notes"

@@ -1,21 +1,23 @@
-from pydantic import BaseModel, EmailStr, Field
-from typing import Optional
+from pydantic import BaseModel, EmailStr
 
 
-class Data(BaseModel):
+class RegisterData(BaseModel):
+    """Register response data model."""
     id: str
     name: str
     email: EmailStr
 
 
 class SchemaRegisterSuccess(BaseModel):
+    """Successful registration response schema."""
     success: bool
     status: int
     message: str
-    data: Data
+    data: RegisterData
 
 
 class SchemaRegisterErrorCase(BaseModel):
+    """Error case registration response schema."""
     success: bool
     status: int
-    message: str = Field(min_length=10, max_length=500)
+    message: str

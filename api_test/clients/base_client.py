@@ -11,19 +11,21 @@ class BaseClient:
     
     DEFAULT_TIMEOUT = 30
     
-    def __init__(self, session: Optional[Session] = None):
+    def __init__(self, base_url: str, session: Optional[Session] = None):
         """Initialize the base client.
         
         Args:
+            base_url: Base URL for the API.
             session: Optional requests Session object.
         """
+        self.base_url = base_url.rstrip('/')
         self.session = session or requests.Session()
         self.logger = logging.getLogger(self.__class__.__name__)
     
     def send_request(
         self,
         method: str,
-        url: str,
+        endpoint: str,
         params: Optional[Dict[str, Any]] = None,
         headers: Optional[Dict[str, str]] = None,
         json: Optional[Dict[str, Any]] = None,
@@ -35,7 +37,7 @@ class BaseClient:
         
         Args:
             method: HTTP method (GET, POST, PUT, DELETE, etc.)
-            url: Request URL
+            endpoint: API endpoint path (e.g., '/users/login')
             params: URL query parameters
             headers: HTTP headers
             json: JSON body data
@@ -49,6 +51,7 @@ class BaseClient:
         Raises:
             RequestException: If the request fails
         """
+        url = f"{self.base_url}{endpoint}"
         self._log_request(method, url, params, headers, json, data, timeout)
         
         try:

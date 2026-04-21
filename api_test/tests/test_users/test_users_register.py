@@ -2,7 +2,7 @@
 import pytest
 
 from api_test.clients.users_client import UsersClient
-from api_test.schemas.users.register import SchemaRegisterSuccess, SchemaRegisterErrorCase
+from api_test.schemas.users import SchemaRegisterSuccess, SchemaRegisterErrorCase
 
 
 @pytest.fixture(scope="function")
@@ -75,10 +75,9 @@ class TestUserRegistration:
         email = users_data.generate_unique_email()
         password = users_data.DEFAULT_PASSWORD
         
-        url = f"{config.base_url}/users/register"
         data = {"email": email, "password": password}
         
-        response = users_client.send_request(method="POST", url=url, data=data)
+        response = users_client.send_request(method="POST", endpoint="/users/register", data=data)
         
         assertions.validate_status_code(response=response, expected_status_code=400)
         assertions.validate_json_schema_pydantic(
@@ -91,10 +90,9 @@ class TestUserRegistration:
         name = users_data.get_test_user_name()
         password = users_data.DEFAULT_PASSWORD
         
-        url = f"{config.base_url}/users/register"
         data = {"name": name, "password": password}
         
-        response = users_client.send_request(method="POST", url=url, data=data)
+        response = users_client.send_request(method="POST", endpoint="/users/register", data=data)
         
         assertions.validate_status_code(response=response, expected_status_code=400)
         assertions.validate_json_schema_pydantic(
@@ -107,10 +105,9 @@ class TestUserRegistration:
         name = users_data.get_test_user_name()
         email = users_data.generate_unique_email()
         
-        url = f"{config.base_url}/users/register"
         data = {"name": name, "email": email}
         
-        response = users_client.send_request(method="POST", url=url, data=data)
+        response = users_client.send_request(method="POST", endpoint="/users/register", data=data)
         
         assertions.validate_status_code(response=response, expected_status_code=400)
         assertions.validate_json_schema_pydantic(
@@ -118,12 +115,9 @@ class TestUserRegistration:
             model=SchemaRegisterErrorCase
         )
     
-    def test_register_empty_payload(self, users_client, assertions, config):
+    def test_register_empty_payload(self, users_client, assertions):
         """Test registering with empty payload should fail."""
-        url = f"{config.base_url}/users/register"
-        data = {}
-        
-        response = users_client.send_request(method="POST", url=url, data=data)
+        response = users_client.send_request(method="POST", endpoint="/users/register", data={})
         
         assertions.validate_status_code(response=response, expected_status_code=400)
         assertions.validate_json_schema_pydantic(
@@ -131,16 +125,13 @@ class TestUserRegistration:
             model=SchemaRegisterErrorCase
         )
     
-    def test_register_invalid_email_format(self, users_client, assertions, config, users_data):
+    def test_register_invalid_email_format(self, users_client, assertions, users_data):
         """Test registering with invalid email format should fail."""
         name = users_data.get_test_user_name()
         email = "invalid-email-format"
         password = users_data.DEFAULT_PASSWORD
         
-        url = f"{config.base_url}/users/register"
-        data = {"name": name, "email": email, "password": password}
-        
-        response = users_client.send_request(method="POST", url=url, data=data)
+        response = users_client.register(name=name, email=email, password=password)
         
         assertions.validate_status_code(response=response, expected_status_code=400)
         assertions.validate_json_schema_pydantic(
@@ -148,16 +139,13 @@ class TestUserRegistration:
             model=SchemaRegisterErrorCase
         )
     
-    def test_register_short_password(self, users_client, assertions, config, users_data):
+    def test_register_short_password(self, users_client, assertions, users_data):
         """Test registering with very short password."""
         name = users_data.get_test_user_name()
         email = users_data.generate_unique_email()
         password = "123"  # Very short password
     
-        url = f"{config.base_url}/users/register"
-        data = {"name": name, "email": email, "password": password}
-        
-        response = users_client.send_request(method="POST", url=url, data=data)
+        response = users_client.register(name=name, email=email, password=password)
         
         # May succeed or fail depending on API password requirements
         # If it succeeds, cleanup; if it fails, validate error
@@ -190,7 +178,7 @@ class TestUserRegistration:
         else:
             assertions.validate_status_code(response=response, expected_status_code=400)
     
-    def test_register_very_long_name(self, users_client, assertions, config, users_data):
+    def test_register_very_long_name(self, users_client, assertions, users_data):
         """Test registering with very long name."""
         name = "A" * 500  # Very long name
         email = users_data.generate_unique_email()
@@ -224,16 +212,13 @@ class TestUserRegistration:
         else:
             assertions.validate_status_code(response=response, expected_status_code=400)
     
-    def test_register_whitespace_only_name(self, users_client, assertions, config, users_data):
+    def test_register_whitespace_only_name(self, users_client, assertions, users_data):
         """Test registering with whitespace only name should fail."""
         name = "   "
         email = users_data.generate_unique_email(prefix="whitespace")
         password = users_data.DEFAULT_PASSWORD
         
-        url = f"{config.base_url}/users/register"
-        data = {"name": name, "email": email, "password": password}
-        
-        response = users_client.send_request(method="POST", url=url, data=data)
+        response = users_client.register(name=name, email=email, password=password)
         
         assertions.validate_status_code(response=response, expected_status_code=400)
         assertions.validate_json_schema_pydantic(
